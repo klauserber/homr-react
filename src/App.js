@@ -14,6 +14,7 @@ export default class App extends Component {
 
   componentDidMount() {
     this.setState({});
+    this.dataServ.mqttConnect();
   }
 
 
