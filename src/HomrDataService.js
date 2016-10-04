@@ -12,9 +12,9 @@ export class HomrDataService {
 
     this.data = {
       defaults: {
-          xs: 3,
-          sm: 2,
-          md: 1
+          xs: 4,
+          sm: 3,
+          md: 2
       },
       views: {
           main: {
@@ -24,7 +24,10 @@ export class HomrDataService {
                   backcolor: "#808080",
               },
               rows: [
-                  [   // row 0
+                {
+                  title: "System",
+                  cols:
+                  [
                       {
                           id: "wartung",
                           text: "Wartung",
@@ -34,9 +37,33 @@ export class HomrDataService {
                           id: "system",
                           text: "System",
                           val: 0
+                      },
+                      {
+                          id: "c3",
+                          text: "C3",
+                          val: 0
+                      },
+                      {
+                          id: "c4",
+                          text: "C4",
+                          val: 0
+                      },
+                      {
+                          id: "c5",
+                          text: "C5",
+                          val: 0
+                      },
+                      {
+                          id: "c6",
+                          text: "C6",
+                          val: 0
                       }
-                  ],
-                  [   // row 1
+                  ]
+                },
+                {
+                  title: "Fenster",
+                  cols:
+                  [
                       {
                           id: "fenster1",
                           text: "Fenster 1",
@@ -48,6 +75,7 @@ export class HomrDataService {
                           val: 0
                       }
                   ]
+                }
               ]
           },
           cam: {
@@ -57,7 +85,10 @@ export class HomrDataService {
                   backcolor: "#808080",
               },
               rows: [
-                  [   // row 0
+                {
+                  title: "Kameras",
+                  cols:
+                  [
                       {
                           id: "cameingang",
                           text: "Cam Eingang",
@@ -69,6 +100,7 @@ export class HomrDataService {
                           val: 0
                       }
                   ]
+                }
               ]
           }
       }

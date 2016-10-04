@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Grid, Row, Col, Panel } from 'react-bootstrap';
+import { HomrStatusButton } from './HomrStatusButton.js';
+
 
 export class HomrStatusView extends Component {
 
@@ -11,26 +13,42 @@ export class HomrStatusView extends Component {
     for(var r=0; r < data.rows.length; r++) {
       var row = data.rows[r];
       var cols = [];
-      for(var c=0; c < row.length; c++) {
-        var col = globaldefaults;
+      for(var c=0; c < row.cols.length; c++) {
+        var inCols = row.cols[c];
+        var col = {};
         var k;
+        for(k in globaldefaults) {
+          if(globaldefaults.hasOwnProperty(k)) {
+            col[k] = globaldefaults[k];
+          }
+        }
         for(k in data.defaults) {
-          col[k] = data.defaults[k];
+          if(data.defaults.hasOwnProperty(k)) {
+            col[k] = data.defaults[k];
+          }
         }
-        for(k in row[c]) {
-          col[k] = row[c][k];
+        for(k in inCols) {
+          if(inCols.hasOwnProperty(k)) {
+            col[k] = inCols[k];
+          }
         }
-        cols.push(<Col key={c} xs={col.xs} sm={col.sm} md={col.md}>{col.text}</Col>);
+
+        cols.push(<Col key={c} xs={col.xs} sm={col.sm} md={col.md}><HomrStatusButton compData={col} /></Col>);
       }
-      rows.push(<Row key={r}>{cols}</Row>);
+
+      var title = <h3>{row.title}</h3>
+      rows.push(
+        <Panel key={r} header={title}>
+          <Grid fluid={true}>
+            <Row>{cols}</Row>
+          </Grid>
+        </Panel>
+      );
     }
 
     return (
-      <div>
-        <h1>{data.title}</h1>
-        <Grid>
+      <div className="container">
           {rows}
-        </Grid>
       </div>
     );
   }

@@ -24,13 +24,15 @@ export default class App extends Component {
     };
     var prefix = this.dataServ.config.statusprefix;
     for(var viewKey in st.data.views) {
-      var view = st.data.views[viewKey];
-      for(var r=0; r < view.rows.length; r++) {
-        var row = view.rows[r];
-        for(var c=0; c < row.length; c++) {
-          var col = row[c];
-          var key = prefix + viewKey + "/" + col.id;
-          st.dataMap[key] = col;
+      if(st.data.views.hasOwnProperty(viewKey)) {
+        var view = st.data.views[viewKey];
+        for(var r=0; r < view.rows.length; r++) {
+          var row = view.rows[r];
+          for(var c=0; c < row.cols.length; c++) {
+            var col = row.cols[c];
+            var key = prefix + viewKey + "/" + col.id;
+            st.dataMap[key] = col;
+          }
         }
       }
     }
@@ -46,7 +48,9 @@ export default class App extends Component {
     var col = st.dataMap[topic];
     if(col !== undefined) {
       for(var k in data) {
-        col[k] = data[k];
+        if(data.hasOwnProperty(k)) {
+          col[k] = data[k];
+        }
       }
     }
     this.setState(st);
