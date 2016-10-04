@@ -1,24 +1,17 @@
 import React, { Component } from 'react';
-import { Navbar, NavItem, Nav, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Navbar, NavItem, Nav } from 'react-bootstrap';
 
 
 export class HomrNav extends Component {
 
   render() {
-    var viewConfigs = this.props.viewConfigs;
+    var viewsData = this.props.viewsData;
     var sViews = [];
-    var otherViews = [];
     var k;
 
-    for(k in viewConfigs) {
-      if(viewConfigs.hasOwnProperty(k)) {
-        var viewConf = viewConfigs[k];
-        if(viewConf.type === "status") {
-          sViews.push(<MenuItem eventKey={k} key={k}>{viewConfigs[k].title}</MenuItem>);
-        }
-        else {
-          otherViews.push(<NavItem href="#" eventKey={k} key={k}>{viewConfigs[k].title}</NavItem>);
-        }
+    for(k in viewsData) {
+      if(viewsData.hasOwnProperty(k)) {
+        sViews.push(<NavItem href="#" eventKey={k} key={k}>{viewsData[k].title}</NavItem>);
       }
     }
 
@@ -32,10 +25,7 @@ export class HomrNav extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav onSelect={this.props.handleNavEvent}>
-            <NavDropdown eventKey={3} title="Status" id="menuStatusDropDown">
-              {sViews}
-            </NavDropdown>
-            {otherViews}
+            {sViews}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

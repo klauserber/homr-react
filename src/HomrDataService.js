@@ -2,50 +2,104 @@
 import 'paho-mqtt';
 
 export class HomrDataService {
-  constructor() {
-    this.confData = {
-      viewConfigs: {
-        mainView: {
-          id: "main",
-          title: "Main View",
-          type: "status"
-        },
-        camView: {
-          id: "cam",
-          title: "Cam View",
-          type: "status"
-        },
-        monitor: {
-          title: "Monitor",
-          type: "monitor"
-        },
-        config: {
-          clientid: "homrreact",
-          title: "Configuration",
-          type: "config",
-          mqttHost: "r2d2",
-          mqttPort: 9001
-        }
-      }
+  constructor(messageCallback) {
+    this.config = {
+      statusprefix: "hmr/status/hmr1/",
+      clientid: "hmr1",
+      mqttHost: "r2d2",
+      mqttPort: 9001
     };
+
+    this.data = {
+      defaults: {
+          xs: 3,
+          sm: 2,
+          md: 1
+      },
+      views: {
+          main: {
+              title: "Main View",
+              defaults: {
+                  color: "#000000",
+                  backcolor: "#808080",
+              },
+              rows: [
+                  [   // row 0
+                      {
+                          id: "wartung",
+                          text: "Wartung",
+                          val: 0
+                      },
+                      {
+                          id: "system",
+                          text: "System",
+                          val: 0
+                      }
+                  ],
+                  [   // row 1
+                      {
+                          id: "fenster1",
+                          text: "Fenster 1",
+                          val: 0
+                      },
+                      {
+                          id: "fenster2",
+                          text: "Fenster 2",
+                          val: 0
+                      }
+                  ]
+              ]
+          },
+          cam: {
+              title: "Cam View",
+              defaults: {
+                  color: "#000000",
+                  backcolor: "#808080",
+              },
+              rows: [
+                  [   // row 0
+                      {
+                          id: "cameingang",
+                          text: "Cam Eingang",
+                          val: 0,
+                      },
+                      {
+                          id: "camterasse",
+                          text: "Cam Terasse",
+                          val: 0
+                      }
+                  ]
+              ]
+          }
+      }
+    }
+
+    this.onMessage = messageCallback;
+
   }
 
   mqttConnect() {
-    var c = this.confData.viewConfigs.config;
+    var c = this.config;
     // Create a client instance
     /*global Paho*/
     /*eslint no-undef: "error"*/
     this.mqtt = new Paho.MQTT.Client(c.mqttHost, c.mqttPort, c.clientid);
 
-    // set callback handlers
+    // sset callback handlers
     this.mqtt.onConnectionLost = (responseObject) => {
       console.log("ConnectionLost");
       if (responseObject.errorCode !== 0) {
-        console.log("response: " + responseObject.errorMessage);
+        //console.log("response: " + responseObject.errorMessage);
       }
     };
     this.mqtt.onMessageArrived = (message) => {
-      console.log("onMessageArrived " + message.destinationName + ": " + message.payloadString);
+      var topic = message.destinationName;
+      console.log(topic);
+      //console.log(message);
+      if(message.payloadString !== "") {
+        var data = JSON.parse(message.payloadString);
+        this.onMessage(data, message.destinationName);
+      }
     };
 
     // connect the client
@@ -54,17 +108,14 @@ export class HomrDataService {
 
   // called when the client connects
   onConnect() {
-    var c = this.confData.viewConfigs.config;
+    var c = this.config;
     // Once a connection has been made, make a subscription and send a message.
-    this.mqtt.subscribe("hmr/status/" + c.clientid + "/#");
+    this.mqtt.subscribe(c.statusprefix + "#");
     console.log("mqtt connected");
     //message = new Paho.MQTT.Message("Hello");
     //message.destinationName = "/World";
     //client.send(message);
   }
 
-  getViewConfig(key) {
-    return this.confData.viewConfigs[key];
-  }
 
 }
