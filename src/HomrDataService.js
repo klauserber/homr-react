@@ -4,8 +4,9 @@ import 'paho-mqtt';
 export class HomrDataService {
   constructor(messageCallback) {
     this.config = {
-      statusprefix: "hmr/status/hmr1/",
       clientid: "hmr1",
+      statusprefix: "hmr/status/hmr1/",
+      setprefix: "hmr/set/hmr1/",
       mqttHost: "r2d2",
       mqttPort: 9001
     };
@@ -21,7 +22,7 @@ export class HomrDataService {
               title: "Main View",
               defaults: {
                   color: "#000000",
-                  backcolor: "#808080",
+                  backcolor: "#c0c0c0",
               },
               rows: [
                 {
@@ -147,6 +148,13 @@ export class HomrDataService {
     //message = new Paho.MQTT.Message("Hello");
     //message.destinationName = "/World";
     //client.send(message);
+  }
+
+  sendMessage(topic, msg) {
+    var message = new Paho.MQTT.Message(JSON.stringify(msg));
+    message.destinationName = topic;
+    this.mqtt.send(message);
+    console.log("Message sent to: " + topic);
   }
 
 

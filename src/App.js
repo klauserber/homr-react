@@ -26,10 +26,12 @@ export default class App extends Component {
     for(var viewKey in st.data.views) {
       if(st.data.views.hasOwnProperty(viewKey)) {
         var view = st.data.views[viewKey];
+        view.id = viewKey;
         for(var r=0; r < view.rows.length; r++) {
           var row = view.rows[r];
           for(var c=0; c < row.cols.length; c++) {
             var col = row.cols[c];
+            col.waiting = 1;
             var key = prefix + viewKey + "/" + col.id;
             st.dataMap[key] = col;
           }
@@ -52,6 +54,7 @@ export default class App extends Component {
           col[k] = data[k];
         }
       }
+      col.waiting = 0;
     }
     this.setState(st);
   }
@@ -62,25 +65,22 @@ export default class App extends Component {
 
 
   handleNavEvent(eventKey) {
-    /*console.log(eventKey);
-    console.log(event.target);
-    console.log(this);*/
-
     var st = this.state;
     st.currentViewKey = eventKey;
     this.setState(st);
+  }
 
-    /*switch (viewConf.type) {
-      case "monitor":
-        currentState.currentView = <HomrMonitorView viewConf={viewConf} />
-        break;
-      case "config":
-        currentState.currentView = <HomrConfigurationView viewConf={viewConf} />
-        break;
-      default:
-        currentState.currentView = <HomrStatusView viewData={viewData} />
-    }*/
-
+  onAction(event, homrId, payload) {
+    var st = this.state;
+    var ds = this.dataServ;
+    var topic = ds.config.setprefix + homrId;
+    var key = ds.config.statusprefix + homrId;
+    var col = st.dataMap[key];
+    if(col !== undefined) {
+      col.waiting = 1;
+    }
+    ds.sendMessage(topic, payload);
+    this.setState(st);
   }
 
   render() {
@@ -90,7 +90,7 @@ export default class App extends Component {
       var key = this.state.currentViewKey;
       var data = this.state.data;
       views = data.views;
-      view = <HomrStatusView viewData={views[key]} defaults={data.defaults} />;
+      view = <HomrStatusView viewData={views[key]} defaults={data.defaults} onAction={this.onAction.bind(this)}/>;
     }
 
     return (
@@ -102,11 +102,3 @@ export default class App extends Component {
     );
   }
 }
-
-
-/*class HomrMonitorView extends Component {
-
-  render() {
-    return (<p>{this.props.viewConf.title}</p>);
-  }
-}*/
