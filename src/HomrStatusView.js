@@ -38,12 +38,12 @@ export class HomrStatusView extends Component {
           }
         }
 
-        cols.push(<Col key={c} xs={col.xs} sm={col.sm} md={col.md}><HomrStatusButton compData={col} onAction={this.onAction.bind(this)}/></Col>);
+        cols.push(<Col className="homr-col" key={c} xs={col.xs} sm={col.sm} md={col.md}><HomrStatusButton compData={col} onAction={this.onAction.bind(this)}/></Col>);
       }
 
       var title = <h3>{row.title}</h3>
       rows.push(
-        <Panel key={r} header={title} collapsible={true} defaultExpanded={true}>
+        <Panel className="homr-status-view" key={r} header={title} collapsible={true} defaultExpanded={true}>
           <Grid fluid={true}>
             <Row>{cols}</Row>
           </Grid>

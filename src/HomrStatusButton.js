@@ -20,7 +20,7 @@ export class HomrStatusButton extends Component {
     };
 
     return (
-      <Panel style={style} onClick={this.handleClick.bind(this)}>{compData.text}</Panel>
+      <Panel style={style} className="homr-status-button" onClick={this.handleClick.bind(this)}>{compData.text}</Panel>
     );
   }
 }

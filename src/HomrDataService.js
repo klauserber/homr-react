@@ -11,6 +11,8 @@ export class HomrDataService {
       mqttPort: 9001
     };
 
+    this.uniqueClientid = this.config.clientid + "-" + new Date().getTime();
+
     this.data = {
       defaults: {
           xs: 4,
@@ -30,11 +32,6 @@ export class HomrDataService {
                   cols:
                   [
                       {
-                          id: "wartung",
-                          text: "Wartung",
-                          val: 0
-                      },
-                      {
                           id: "system",
                           text: "System",
                           val: 0
@@ -47,6 +44,11 @@ export class HomrDataService {
                       {
                           id: "c4",
                           text: "C4",
+                          val: 0
+                      },
+                      {
+                          id: "wartung",
+                          text: "Wartung",
                           val: 0
                       },
                       {
@@ -116,7 +118,7 @@ export class HomrDataService {
     // Create a client instance
     /*global Paho*/
     /*eslint no-undef: "error"*/
-    this.mqtt = new Paho.MQTT.Client(c.mqttHost, c.mqttPort, c.clientid);
+    this.mqtt = new Paho.MQTT.Client(c.mqttHost, c.mqttPort, this.uniqueClientid);
 
     // sset callback handlers
     this.mqtt.onConnectionLost = (responseObject) => {
