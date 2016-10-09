@@ -32,6 +32,11 @@ export class HomrStatusView extends Component {
             col[k] = data.defaults[k];
           }
         }
+        for(k in row.defaults) {
+          if(row.defaults.hasOwnProperty(k)) {
+            col[k] = row.defaults[k];
+          }
+        }
         for(k in inCols) {
           if(inCols.hasOwnProperty(k)) {
             col[k] = inCols[k];

@@ -17,48 +17,92 @@ export class HomrDataService {
       defaults: {
           xs: 4,
           sm: 3,
-          md: 2
+          md: 2,
+          waitingcolor: "grey"
       },
       views: {
           main: {
               title: "Main View",
               defaults: {
                   color: "#000000",
-                  backcolor: "#c0c0c0",
+                  backcolor: "#c0c0c0"
               },
               rows: [
                 {
+                  defaults: {
+                      oncolor: "orange",
+                      offcolor: "#c0c0c0",
+                      xs: 2,
+                      sm: 2,
+                      md: 1,
+                  },
+                  title: "Alarm",
+                  cols:
+                  [
+                      {
+                          id: "var-aussen-ueberwachung",
+                          text: "Außen Überw.",
+                          val: 0,
+                          xs: 4,
+                          sm: 3,
+                          md: 2
+                      },
+                      {
+                          id: "var-alarm-status",
+                          text: "ALARM",
+                          offtext: "KEIN ALARM",
+                          val: 0,
+                          xs: 8,
+                          sm: 9,
+                          md: 10,
+                          oncolor: "red",
+                          readonly: 1
+                      },
+                      {
+                          id: "var-alarm-aussen",
+                          text: "Außen",
+                          val: 0
+                      },
+                      {
+                          id: "var-alarm-innen",
+                          text: "Innen",
+                          val: 0
+                      },
+                      {
+                          id: "var-alarm-timo-zimmer",
+                          text: "Timo",
+                          val: 0
+                      },
+                      {
+                          id: "var-alarm-ole-zimmer",
+                          text: "Ole",
+                          val: 0
+                      },
+                      {
+                          id: "var-alarm-malzimmer",
+                          text: "Malzm.",
+                          val: 0
+                      },
+                      {
+                          id: "var-alarm-schlafzimmer",
+                          text: "Schlaf.",
+                          val: 0
+                      },
+                  ]
+                },
+                {
+                  defaults: {
+                      oncolor: "red",
+                      offcolor: "green",
+                  },
                   title: "System",
                   cols:
                   [
                       {
-                          id: "system",
-                          text: "System",
-                          val: 0
-                      },
-                      {
-                          id: "c3",
-                          text: "C3",
-                          val: 0
-                      },
-                      {
-                          id: "c4",
-                          text: "C4",
-                          val: 0
-                      },
-                      {
-                          id: "wartung",
+                          id: "var-alarm-wartung",
                           text: "Wartung",
-                          val: 0
-                      },
-                      {
-                          id: "c5",
-                          text: "C5",
-                          val: 0
-                      },
-                      {
-                          id: "c6",
-                          text: "C6",
+                          ontext: "Wartung an",
+                          offtext: "Wartung aus",
                           val: 0
                       }
                   ]

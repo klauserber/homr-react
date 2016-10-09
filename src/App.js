@@ -44,7 +44,7 @@ export default class App extends Component {
   }
 
   processMessage(data, topic) {
-    console.log(data.text);
+    console.log(data.val);
     var st = this.state;
 
     var col = st.dataMap[topic];
