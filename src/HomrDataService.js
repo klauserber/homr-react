@@ -5,8 +5,8 @@ export class HomrDataService {
   constructor(messageCallback) {
     this.config = {
       clientid: "hmr1",
-      statusprefix: "hmr/status/hmr1/",
-      setprefix: "hmr/set/hmr1/",
+      statusprefix: "hmr1/status/",
+      setprefix: "hmr1/set/",
       mqttHost: "r2d2",
       mqttPort: 9001
     };
@@ -91,11 +91,29 @@ export class HomrDataService {
                   ]
                 },
                 {
+                  title: "Fenster",
+                  cols:
+                  [
+                      {
+                          id: "fenster-auf",
+                          text: "Fenster",
+                          val: 0,
+                          oncolor: "cyan",
+                          offcolor: "#c0c0c0",
+                          xs: 12,
+                          sm: 12,
+                          md: 12,
+                          readonly: 1,
+                          offtext: "Alle zu"
+                      }
+                  ]
+                },
+                {
                   defaults: {
                       oncolor: "red",
                       offcolor: "green",
                   },
-                  title: "System",
+                  title: "System / Zisterne",
                   cols:
                   [
                       {
@@ -104,23 +122,60 @@ export class HomrDataService {
                           ontext: "Wartung an",
                           offtext: "Wartung aus",
                           val: 0
+                      },
+                      {
+                          id: "Servicemeldungen",
+                          text: "Servicemeld.:",
+                          readonly: 1,
+                          val: 0
+                      },
+                      {
+                          id: "zisterne",
+                          text: "Zisterne",
+                          readonly: 1,
+                          val: 0
                       }
                   ]
                 },
                 {
-                  title: "Fenster",
+                  defaults: {
+                      oncolor: "yellow",
+                      offcolor: "#c0c0c0",
+                      xs: 2,
+                      sm: 2,
+                      md: 1
+                  },
+                  title: "Licht",
                   cols:
                   [
                       {
-                          id: "fenster1",
-                          text: "Fenster 1",
+                          id: "sc-flur-oben-licht-1",
+                          text: "Flur oben",
                           val: 0
                       },
                       {
-                          id: "fenster2",
-                          text: "Fenster 2",
+                          id: "sc-flur-unten-licht-1",
+                          text: "Flur unten",
+                          val: 0
+                      },
+                      {
+                          id: "sc-flur-unten-eingang-licht-1",
+                          text: "Ein- gang",
+                          val: 0
+                      },
+                      {
+                          id: "sc-aussenfluter-1",
+                          text: "Fluter Außen",
+                          val: 0
+                      },
+                      {
+                          id: "sc-aussen-steckdosen-1",
+                          text: "Außen Steckd.",
+                          interval: 1000,
                           val: 0
                       }
+
+
                   ]
                 }
               ]
@@ -139,6 +194,7 @@ export class HomrDataService {
                       {
                           id: "cameingang",
                           text: "Cam Eingang",
+                          interval: 1000,
                           val: 0,
                       },
                       {
@@ -168,7 +224,7 @@ export class HomrDataService {
     this.mqtt.onConnectionLost = (responseObject) => {
       console.log("ConnectionLost");
       if (responseObject.errorCode !== 0) {
-        //console.log("response: " + responseObject.errorMessage);
+        console.log("response: " + responseObject.errorMessage);
       }
     };
     this.mqtt.onMessageArrived = (message) => {
@@ -191,9 +247,6 @@ export class HomrDataService {
     // Once a connection has been made, make a subscription and send a message.
     this.mqtt.subscribe(c.statusprefix + "#");
     console.log("mqtt connected");
-    //message = new Paho.MQTT.Message("Hello");
-    //message.destinationName = "/World";
-    //client.send(message);
   }
 
   sendMessage(topic, msg) {

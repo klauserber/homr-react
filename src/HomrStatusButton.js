@@ -3,39 +3,71 @@ import { Panel } from 'react-bootstrap';
 
 
 export class HomrStatusButton extends Component {
+  componentDidMount() {
+    var data = this.props.compData;
+    console.log(data.text);
+    if(data.interval !== undefined) {
+      var st = {count: 0};
+      this.setState(st);
+      this.timer = setInterval(() => this.onTimer(), data.interval);
+    }
+  }
+
+  componentWillUnmount() {
+    var data = this.props.compData;
+    if(data.interval !== undefined) {
+      clearInterval(this.timer);
+    }
+  }
+
+  onTimer() {
+    var data = this.props.compData;
+    var st = this.state;
+    st.count++;
+
+    console.log("count " + data.text + ": " + st.count);
+    this.setState(st);
+  }
 
   handleClick(event) {
     var data = this.props.compData;
     if(data.readonly !== 1) {
-      var v = data.val === "0" ? "1" : "0";
+      var v;
+      if(typeof(data.val) === "string") {
+        v = data.val === "0" ? "1" : "0";
+      }
+      else if(typeof(data.val) === "number") {
+        v = data.val === 0 ? 1 : 0;
+      }
       var payload = { val: v };
       this.props.onAction(event, data.id, payload);
     }
   }
 
   render() {
-    var compData = this.props.compData;
+    var data = this.props.compData;
     var bc;
     var text;
-    if(compData.waiting === 1) {
-      bc = compData.waitingcolor;
-      text = compData.text;
+    if(data.waiting === 1) {
+      bc = data.waitingcolor;
+      text = data.text;
     }
     else {
-      bc = compData.val === "0" ? compData.offcolor : compData.oncolor;
+      bc = (data.val === "0" || data.val === 0) ? data.offcolor : data.oncolor;
       if(bc === undefined) {
-        bc = compData.backcolor;
+        bc = data.backcolor;
       }
-      text = compData.val === "0" ? compData.offtext : compData.ontext;
+      text = (data.val === "0" || data.val === 0) ? data.offtext : data.ontext;
       if(text === undefined) {
-        text = compData.text;
+        text = data.text;
       }
     }
 
     var style = {
-      color: compData.color,
+      color: data.color,
       backgroundColor: bc
     };
+
 
     return (
       <Panel style={style} className="homr-status-button" onClick={this.handleClick.bind(this)}>{text}</Panel>

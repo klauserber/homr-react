@@ -79,6 +79,7 @@ export default class App extends Component {
     if(col !== undefined) {
       col.waiting = 1;
     }
+    payload.ts = new Date().getTime();
     ds.sendMessage(topic, payload);
     this.setState(st);
   }

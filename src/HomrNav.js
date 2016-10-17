@@ -3,6 +3,20 @@ import { Navbar, NavItem, Nav } from 'react-bootstrap';
 
 
 export class HomrNav extends Component {
+  componentDidMount() {
+    this.setState({ navExpanded: false })
+  }
+
+  navToggle() {
+    var st = this.state;
+    st.navExpanded = !st.navExpanded;
+    this.setState(st);
+  }
+
+  handleNavEvent(eventKey) {
+    this.navToggle();
+    this.props.handleNavEvent(eventKey);
+  }
 
   render() {
     var viewsData = this.props.viewsData;
@@ -15,8 +29,13 @@ export class HomrNav extends Component {
       }
     }
 
+    var st = this.state;
+    var exp = st !== null ? st.navExpanded : false;
+
     return (
-      <Navbar bsStyle="inverse" fixedTop>
+      <Navbar bsStyle="inverse" fixedTop
+          onToggle={this.navToggle.bind(this)}
+          expanded={exp}>
         <Navbar.Header>
           <Navbar.Brand>
             <a href="#">HOMR</a>
@@ -24,7 +43,7 @@ export class HomrNav extends Component {
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
-          <Nav onSelect={this.props.handleNavEvent}>
+          <Nav onSelect={this.handleNavEvent.bind(this)}>
             {sViews}
           </Nav>
         </Navbar.Collapse>
