@@ -5,6 +5,11 @@ import { HomrStatusButton } from './HomrStatusButton.js';
 
 export class HomrStatusView extends Component {
 
+  componentDidMount() {
+    var id = this.props.viewData.id;
+    console.log( "DidMount: " + id);
+  }
+
   onAction(event, homrId, payload) {
     var id = this.props.viewData.id + "/" + homrId;
     this.props.onAction(event, id, payload);
@@ -42,13 +47,14 @@ export class HomrStatusView extends Component {
             col[k] = inCols[k];
           }
         }
-
-        cols.push(<Col className="homr-col" key={c} xs={col.xs} sm={col.sm} md={col.md}><HomrStatusButton compData={col} onAction={this.onAction.bind(this)}/></Col>);
+        var colKey = data.id + "_" + r + "_" + c;
+        cols.push(<Col className="homr-col" key={colKey} xs={col.xs} sm={col.sm} md={col.md}><HomrStatusButton compData={col} onAction={this.onAction.bind(this)}/></Col>);
       }
 
       var title = <h3>{row.title}</h3>
+      var rowKey = data.id + "_" + r;
       rows.push(
-        <Panel className="homr-status-view" key={r} header={title} collapsible={true} defaultExpanded={true}>
+        <Panel className="homr-status-view" key={rowKey} header={title} collapsible={true} defaultExpanded={true}>
           <Grid fluid={true}>
             <Row>{cols}</Row>
           </Grid>

@@ -16,7 +16,7 @@ export default class App extends Component {
     );
   }
 
-  componentDidMount() {
+  componentWillMount() {
     var st = {
       currentViewKey: "main",
       data: this.dataServ.data,
@@ -91,7 +91,8 @@ export default class App extends Component {
       var key = this.state.currentViewKey;
       var data = this.state.data;
       views = data.views;
-      view = <HomrStatusView viewData={views[key]} defaults={data.defaults} onAction={this.onAction.bind(this)}/>;
+      var viewKey = "view_" + key;
+      view = <HomrStatusView key={viewKey} viewData={views[key]} defaults={data.defaults} onAction={this.onAction.bind(this)}/>;
     }
 
     return (

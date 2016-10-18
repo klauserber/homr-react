@@ -3,29 +3,37 @@ import { Panel } from 'react-bootstrap';
 
 
 export class HomrStatusButton extends Component {
+
+  componentWillMount() {
+    var data = this.props.compData;
+    var st = {};
+    //console.log( "WillMount: " + data.text);
+    if(data.interval !== undefined) {
+      st.count = 0;
+    }
+    this.setState(st);
+  }
   componentDidMount() {
     var data = this.props.compData;
-    console.log(data.text);
+    //console.log( "DidMount: " + data.text);
     if(data.interval !== undefined) {
-      var st = {count: 0};
-      this.setState(st);
       this.timer = setInterval(() => this.onTimer(), data.interval);
     }
   }
 
   componentWillUnmount() {
     var data = this.props.compData;
+    //console.log( "WillUnmount: " + data.text);
     if(data.interval !== undefined) {
       clearInterval(this.timer);
     }
   }
 
   onTimer() {
-    var data = this.props.compData;
     var st = this.state;
     st.count++;
 
-    console.log("count " + data.text + ": " + st.count);
+    //console.log("count " + data.text + ": " + st.count);
     this.setState(st);
   }
 
@@ -69,8 +77,25 @@ export class HomrStatusButton extends Component {
     };
 
 
+    var txtDiv = "";
+    if(text !== "") {
+      txtDiv = <div>{text}</div>;
+    }
+
+    var ct = 0;
+    if(this.state.count !== undefined) {
+      ct = this.state.count;
+    }
+
+    var img = "";
+    if(data.imgurl !== undefined) {
+      img = <img className="button-image" role="presentation" src={data.imgurl + "?" + ct} />;
+    }
+
+
+    var key = "button_" + data.id;
     return (
-      <Panel style={style} className="homr-status-button" onClick={this.handleClick.bind(this)}>{text}</Panel>
+      <Panel key={key} style={style} className="homr-status-button" onClick={this.handleClick.bind(this)}>{img}{txtDiv}</Panel>
     );
   }
 }

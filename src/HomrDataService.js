@@ -87,7 +87,7 @@ export class HomrDataService {
                           id: "var-alarm-schlafzimmer",
                           text: "Schlaf.",
                           val: 0
-                      },
+                      }
                   ]
                 },
                 {
@@ -150,34 +150,58 @@ export class HomrDataService {
                   [
                       {
                           id: "sc-flur-oben-licht-1",
-                          text: "Flur oben",
+                          text: "Fl. ob.",
                           val: 0
                       },
                       {
                           id: "sc-flur-unten-licht-1",
-                          text: "Flur unten",
+                          text: "Fl. unt.",
                           val: 0
                       },
                       {
                           id: "sc-flur-unten-eingang-licht-1",
-                          text: "Ein- gang",
+                          text: "Eingang",
                           val: 0
                       },
                       {
                           id: "sc-aussenfluter-1",
-                          text: "Fluter Außen",
+                          text: "Fluter",
                           val: 0
                       },
                       {
                           id: "sc-aussen-steckdosen-1",
-                          text: "Außen Steckd.",
+                          text: "Steckd.",
                           interval: 1000,
                           val: 0
                       }
-
-
+                  ]
+                },
+                {
+                  defaults: {
+                      xs: 6,
+                      sm: 6,
+                      md: 6
+                  },
+                  title: "Kameras",
+                  cols:
+                  [
+                      {
+                          id: "cameingang",
+                          text: "Cam Eingang",
+                          interval: 5000,
+                          val: 0,
+                          imgurl: "http://ip-cam-eingang/cgi-bin/viewer/video.jpg"
+                      },
+                      {
+                          id: "camterasse",
+                          text: "Cam Terasse",
+                          interval: 5000,
+                          val: 0,
+                          imgurl: "http://ip-cam-terasse/cgi-bin/viewer/video.jpg"
+                      }
                   ]
                 }
+
               ]
           },
           cam: {
@@ -185,6 +209,9 @@ export class HomrDataService {
               defaults: {
                   color: "#000000",
                   backcolor: "#808080",
+                  xs: 12,
+                  sm: 6,
+                  md: 6
               },
               rows: [
                 {
@@ -194,13 +221,16 @@ export class HomrDataService {
                       {
                           id: "cameingang",
                           text: "Cam Eingang",
-                          interval: 1000,
+                          interval: 2000,
                           val: 0,
+                          imgurl: "http://ip-cam-eingang/cgi-bin/viewer/video.jpg"
                       },
                       {
                           id: "camterasse",
                           text: "Cam Terasse",
-                          val: 0
+                          interval: 2000,
+                          val: 0,
+                          imgurl: "http://ip-cam-terasse/cgi-bin/viewer/video.jpg"
                       }
                   ]
                 }
