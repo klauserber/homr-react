@@ -9,20 +9,30 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.handleNavEvent = this.handleNavEvent.bind(this);
+  }
+
+
+  componentDidMount() {
     this.dataServ = new HomrDataService(
       (data, topic) => {
         this.processMessage(data, topic);
       }
     );
+    this.dataServ.loadConfig().then((data) => {
+      this.onConfigLoaded(data);
+    });
+
   }
 
-  componentWillMount() {
+  onConfigLoaded(data) {
+    console.log("config loaded");
+    console.log(data);
     var st = {
       currentViewKey: "main",
-      data: this.dataServ.data,
+      data: data,
       dataMap: {}
     };
-    var prefix = this.dataServ.config.statusprefix;
+    var prefix = data.config.statusprefix;
     for(var viewKey in st.data.views) {
       if(st.data.views.hasOwnProperty(viewKey)) {
         var view = st.data.views[viewKey];
@@ -38,13 +48,12 @@ export default class App extends Component {
         }
       }
     }
-
     this.setState(st);
-    this.dataServ.mqttConnect();
+    this.dataServ.mqttConnect(data.config);
   }
 
   processMessage(data, topic) {
-    console.log(data.val);
+    //console.log(data.val);
     var st = this.state;
 
     var col = st.dataMap[topic];
@@ -73,8 +82,8 @@ export default class App extends Component {
   onAction(event, homrId, payload) {
     var st = this.state;
     var ds = this.dataServ;
-    var topic = ds.config.setprefix + homrId;
-    var key = ds.config.statusprefix + homrId;
+    var topic = st.data.config.setprefix + homrId;
+    var key = st.data.config.statusprefix + homrId;
     var col = st.dataMap[key];
     if(col !== undefined) {
       col.waiting = 1;
