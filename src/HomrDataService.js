@@ -6,15 +6,16 @@ export class HomrDataService {
     this.onMessage = messageCallback;
   }
 
-  loadConfig() {
+  loadConfig(configUrl) {
       return new Promise((resolve, reject) => {
-        var _this = this;
         console.log("fetch now");
-        fetch("http://r2d2:1880/hmr1-data.json").then(response => response.json())
-          .then(json => {
+        fetch(configUrl).then(response => response.json())
+          .then((json) => {
             resolve(json);
           }
-        );
+        ).catch((err) => {
+          reject(err);
+        });
       });
   }
 
@@ -52,7 +53,6 @@ export class HomrDataService {
 
   // called when the client connects
   onConnect(prefix) {
-    var c = this.config;
     // Once a connection has been made, make a subscription and send a message.
     this.mqtt.subscribe(prefix + "#");
     console.log("mqtt connected");

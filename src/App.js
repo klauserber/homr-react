@@ -3,6 +3,7 @@ import { HomrDataService } from './HomrDataService.js';
 import './App.css';
 import { HomrNav } from './HomrNav.js';
 import { HomrStatusView } from './HomrStatusView.js';
+import { HomrConfigView } from './HomrConfigView.js';
 
 export default class App extends Component {
 
@@ -18,25 +19,44 @@ export default class App extends Component {
         this.processMessage(data, topic);
       }
     );
-    this.dataServ.loadConfig().then((data) => {
-      this.onConfigLoaded(data);
-    });
 
+    var localConfig = JSON.parse(window.localStorage.hmrLocalConfig);
+
+    if(localConfig !== undefined) {
+      this.dataServ.loadConfig(localConfig.configUrl).then((data) => {
+        this.onConfigLoaded(data);
+      }).catch((err) => {
+        this.resetState();
+      });
+    }
+  }
+
+  resetState() {
+    this.setState({
+      currentViewKey: "configview",
+      data: {},
+      dataMap: {},
+      messages: []
+    });
   }
 
   onConfigLoaded(data) {
     console.log("config loaded");
     console.log(data);
-    var st = {
-      currentViewKey: "main",
-      data: data,
-      dataMap: {}
-    };
+    this.resetState();
+    var st = this.state;
+    st.data = data;
+    var first = true;
+
     var prefix = data.config.statusprefix;
     for(var viewKey in st.data.views) {
       if(st.data.views.hasOwnProperty(viewKey)) {
         var view = st.data.views[viewKey];
         view.id = viewKey;
+        if(first) {
+          st.currentViewKey = viewKey;
+          first = false;
+        }
         for(var r=0; r < view.rows.length; r++) {
           var row = view.rows[r];
           for(var c=0; c < row.cols.length; c++) {
@@ -93,6 +113,17 @@ export default class App extends Component {
     this.setState(st);
   }
 
+  saveConfig(localConfig) {
+    console.log("saveConfig");
+    window.localStorage.hmrLocalConfig = JSON.stringify(localConfig);
+    this.dataServ.loadConfig(localConfig.configUrl).then((data) => {
+      this.onConfigLoaded(data);
+    }).catch((err) => {
+      this.resetState();
+    });
+
+  }
+
   render() {
     var view = <div />;
     var views = {};
@@ -100,8 +131,14 @@ export default class App extends Component {
       var key = this.state.currentViewKey;
       var data = this.state.data;
       views = data.views;
-      var viewKey = "view_" + key;
-      view = <HomrStatusView key={viewKey} viewData={views[key]} defaults={data.defaults} onAction={this.onAction.bind(this)}/>;
+      if(key === "configview") {
+        var lc = JSON.parse(window.localStorage.hmrLocalConfig);
+        view = <HomrConfigView key={key} localConfig={lc} onSaveConfig={this.saveConfig.bind(this)}/>;
+      }
+      else {
+        var viewKey = "view_" + key;
+        view = <HomrStatusView key={viewKey} viewData={views[key]} defaults={data.defaults} onAction={this.onAction.bind(this)}/>;
+      }
     }
 
     return (

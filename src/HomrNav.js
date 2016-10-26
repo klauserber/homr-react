@@ -28,6 +28,7 @@ export class HomrNav extends Component {
         sViews.push(<NavItem href="#" eventKey={k} key={k}>{viewsData[k].title}</NavItem>);
       }
     }
+    sViews.push(<NavItem href="#" eventKey={"configview"} key={"configview"}>{"Config"}</NavItem>);
 
     var st = this.state;
     var exp = st !== null ? st.navExpanded : false;
