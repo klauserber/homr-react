@@ -22,19 +22,19 @@ export class HomrConfigView extends Component {
          break;
        default:
      }
-
      this.setState(st);
   }
 
   handleSave(e) {
     this.props.onSaveConfig(this.state);
+    e.preventDefault();
   }
 
   render() {
 
     return (
       <div className="container">
-        <Form horizontal>
+        <Form horizontal onSubmit={this.handleSave.bind(this)}>
           <Panel className="homr-status-view" key={"config"} header={"Configuration"} collapsible={true} defaultExpanded={true}>
             <FormGroup controlId="formConfigUrl">
               <Col componentClass={ControlLabel} xs={12} sm={4} md={2}>
@@ -48,7 +48,7 @@ export class HomrConfigView extends Component {
             </FormGroup>
             <FormGroup>
               <Col xsOffset={8} xs={4}>
-                <Button style={{width: "100%"}} onClick={this.handleSave.bind(this)} >
+                <Button style={{width: "100%"}} type="submit">
                   Save
                 </Button>
               </Col>

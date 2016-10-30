@@ -4,6 +4,7 @@ import './App.css';
 import { HomrNav } from './HomrNav.js';
 import { HomrStatusView } from './HomrStatusView.js';
 import { HomrConfigView } from './HomrConfigView.js';
+import { HomrErrorView } from './HomrErrorView.js';
 
 export default class App extends Component {
 
@@ -12,22 +13,82 @@ export default class App extends Component {
     this.handleNavEvent = this.handleNavEvent.bind(this);
   }
 
+  pushSuccessMessage(txt) {
+    this.pushMessage(txt, "success");
+  }
+  pushInfoMessage(txt) {
+    this.pushMessage(txt, "info");
+  }
+  pushWarningMessage(txt) {
+    this.pushMessage(txt, "warning");
+  }
+  pushDangerMessage(txt) {
+    this.pushMessage(txt, "danger");
+  }
 
+  pushMessage(txt, type) {
+    var st = this.state;
+    if(st !== null) {
+      st.messages.push({
+        text: txt,
+        type: type,
+        time: new Date().getTime()
+      });
+      this.setState(st);
+      if(st.messages.length > 0 && this.timer === undefined) {
+        this.timer = setInterval(() => this.onTimer(), 1000);
+      }
+
+    }
+  }
+
+  componentWillMount() {
+    this.resetState();
+  }
   componentDidMount() {
     this.dataServ = new HomrDataService(
       (data, topic) => {
         this.processMessage(data, topic);
       }
     );
+    var hmrLocalConfig = window.localStorage.hmrLocalConfig;
 
-    var localConfig = JSON.parse(window.localStorage.hmrLocalConfig);
+    if(hmrLocalConfig !== undefined) {
+      var localConfig = JSON.parse(window.localStorage.hmrLocalConfig);
+      this.loadConfig(localConfig.configUrl);
+    }
+    else {
+      this.pushWarningMessage("No Configuration found on this device");
+    }
 
-    if(localConfig !== undefined) {
-      this.dataServ.loadConfig(localConfig.configUrl).then((data) => {
-        this.onConfigLoaded(data);
-      }).catch((err) => {
-        this.resetState();
-      });
+  }
+  componentWillUnmount() {
+    if(this.timer !== undefined) {
+      clearInterval(this.timer);
+    }
+  }
+
+
+  onTimer() {
+    //console.log("timer");
+    var tm = new Date().getTime();
+    var st = this.state;
+    var mess = st.messages;
+    var newMess = [];
+    for(var i=0; i < mess.length; i++) {
+      var m = mess[i];
+      if(m.time > tm - 5000) {
+        newMess.push(m);
+      }
+    }
+    st.messages = newMess;
+    this.setState(st);
+
+    console.log("timer: " + newMess.length);
+
+    if(newMess.length === 0) {
+      clearInterval(this.timer);
+      this.timer = undefined;
     }
   }
 
@@ -116,23 +177,34 @@ export default class App extends Component {
   saveConfig(localConfig) {
     console.log("saveConfig");
     window.localStorage.hmrLocalConfig = JSON.stringify(localConfig);
-    this.dataServ.loadConfig(localConfig.configUrl).then((data) => {
+    this.loadConfig(localConfig.configUrl);
+  }
+
+  loadConfig(configUrl) {
+    this.dataServ.loadConfig(configUrl).then((data) => {
       this.onConfigLoaded(data);
+      this.pushSuccessMessage("Configuration succesfully loaded");
     }).catch((err) => {
       this.resetState();
+      this.pushDangerMessage("Configuration load failed");
     });
-
   }
 
   render() {
     var view = <div />;
     var views = {};
+    var messages = [];
     if(this.state !== null) {
+      messages = this.state.messages;
       var key = this.state.currentViewKey;
       var data = this.state.data;
       views = data.views;
       if(key === "configview") {
-        var lc = JSON.parse(window.localStorage.hmrLocalConfig);
+        var hmrLocalConfig = window.localStorage.hmrLocalConfig;
+        var lc;
+        if(hmrLocalConfig !== undefined) {
+          lc = JSON.parse(hmrLocalConfig);
+        }
         view = <HomrConfigView key={key} localConfig={lc} onSaveConfig={this.saveConfig.bind(this)}/>;
       }
       else {
@@ -145,6 +217,7 @@ export default class App extends Component {
       <div className="App">
         <HomrNav viewsData={views}
           handleNavEvent={this.handleNavEvent}></HomrNav>
+        <HomrErrorView messages={messages} />
         {view}
       </div>
     );
