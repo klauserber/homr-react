@@ -10,7 +10,8 @@
     "react": "^15.3.1",
     "react-bootstrap": "^0.30.3",
     "react-dom": "^15.3.1",
-    "paho-mqtt": "^1.0.3"
+    "paho-mqtt": "^1.0.3",
+    "dateformat": "1.0.12"
   },
   "scripts": {
     "start": "react-scripts start",

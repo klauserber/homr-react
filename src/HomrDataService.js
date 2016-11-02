@@ -2,7 +2,7 @@
 import 'paho-mqtt';
 
 export class HomrDataService {
-  constructor(messageCallback, onConfigLoaded) {
+  constructor(messageCallback) {
     this.onMessage = messageCallback;
   }
 
@@ -38,29 +38,40 @@ export class HomrDataService {
       //var topic = message.destinationName;
       //console.log(topic);
       //console.log(message);
+
+      var payload = message.payloadString;
       if(message.payloadString !== "") {
-        var data = JSON.parse(message.payloadString);
+        var data;
+        try {
+          data = JSON.parse(message.payloadString);
+        }
+        catch(err) {
+          data = payload;
+        }
         this.onMessage(data, message.destinationName);
       }
     };
 
     // connect the client
     this.mqtt.connect({ onSuccess: () => {
-        this.onConnect(config.statusprefix);
+        // Once a connection has been made, make a subscription and send a message.
+        this.mqtt.subscribe("#");
+        console.log("mqtt connected");
       }
     });
-  }
-
-  // called when the client connects
-  onConnect(prefix) {
-    // Once a connection has been made, make a subscription and send a message.
-    this.mqtt.subscribe(prefix + "#");
-    console.log("mqtt connected");
   }
 
   sendMessage(topic, msg) {
     var message = new Paho.MQTT.Message(JSON.stringify(msg));
     message.destinationName = topic;
+    this.mqtt.send(message);
+    console.log("Message sent to: " + topic);
+  }
+
+  removeMessage(topic) {
+    var message = new Paho.MQTT.Message("");
+    message.destinationName = topic;
+    message.retained = true;
     this.mqtt.send(message);
     //console.log("Message sent to: " + topic);
   }

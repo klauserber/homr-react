@@ -28,6 +28,10 @@ export class HomrNav extends Component {
         sViews.push(<NavItem href="#" eventKey={k} key={k}>{viewsData[k].title}</NavItem>);
       }
     }
+
+    if(this.props.monitor === true) {
+      sViews.push(<NavItem href="#" eventKey={"monitorview"} key={"monitorview"}>{"Monitor"}</NavItem>);
+    }
     sViews.push(<NavItem href="#" eventKey={"configview"} key={"configview"}>{"Config"}</NavItem>);
 
     var st = this.state;

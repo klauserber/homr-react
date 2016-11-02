@@ -5,12 +5,14 @@ import { HomrNav } from './HomrNav.js';
 import { HomrStatusView } from './HomrStatusView.js';
 import { HomrConfigView } from './HomrConfigView.js';
 import { HomrErrorView } from './HomrErrorView.js';
+import { HomrMonitorView } from './HomrMonitorView.js';
 
 export default class App extends Component {
 
   constructor(props) {
     super(props);
     this.handleNavEvent = this.handleNavEvent.bind(this);
+    this.renderCount = 0;
   }
 
   pushSuccessMessage(txt) {
@@ -97,6 +99,7 @@ export default class App extends Component {
       currentViewKey: "configview",
       data: {},
       dataMap: {},
+      allDataMap: {},
       messages: []
     });
   }
@@ -108,6 +111,8 @@ export default class App extends Component {
     var st = this.state;
     st.data = data;
     var first = true;
+
+    this.config = data.config;
 
     var prefix = data.config.statusprefix;
     for(var viewKey in st.data.views) {
@@ -130,14 +135,48 @@ export default class App extends Component {
       }
     }
     this.setState(st);
+
+    console.log("start collecting");
+    this.collecting = true;
+    this.bufferedDataMap = {};
+
     this.dataServ.mqttConnect(data.config);
+
+    setTimeout(() => {
+      this.processCollectEnd();
+    }, 5000);
+  }
+
+  processCollectEnd() {
+    console.log("process end collecting");
+    var st = this.state;
+    this.collecting = false;
+    var buf = this.bufferedDataMap;
+    for(var k in buf) {
+      if(buf.hasOwnProperty(k)) {
+        this.messageToState(st, buf[k], k);
+      }
+    }
+    this.setState(st);
+    console.log("collecting ended");
   }
 
   processMessage(data, topic) {
     //console.log(data.val);
-    var st = this.state;
+    if(this.collecting) {
+      this.bufferedDataMap[topic] = data;
+    }
+    else {
+      var st = this.state;
+      this.messageToState(st, data, topic);
+      this.setState(st);
+    }
 
+  }
+
+  messageToState(st, data, topic) {
     var col = st.dataMap[topic];
+    st.allDataMap[topic] = data;
     if(col !== undefined) {
       for(var k in data) {
         if(data.hasOwnProperty(k)) {
@@ -146,7 +185,13 @@ export default class App extends Component {
       }
       col.waiting = 0;
     }
-    this.setState(st);
+  }
+
+  setCollectedState(st) {
+    if(this.collecting) {
+
+      this.buffered = st;
+    }
   }
 
   getViewData(key) {
@@ -190,22 +235,41 @@ export default class App extends Component {
     });
   }
 
+  handleRemoveMessage(key) {
+    var st = this.state;
+    this.dataServ.removeMessage(key);
+
+    st.allDataMap[key] = undefined;
+    st.dataMap[key] = undefined;
+
+    this.setState(st);
+  }
+
   render() {
     var view = <div />;
     var views = {};
     var messages = [];
+
+    var rc = this.renderCount + 1;
+    this.renderCount = rc;
+
     if(this.state !== null) {
+      var hmrLocalConfig = window.localStorage.hmrLocalConfig;
+      var lc;
+      if(hmrLocalConfig !== undefined) {
+        lc = JSON.parse(hmrLocalConfig);
+      }
       messages = this.state.messages;
       var key = this.state.currentViewKey;
       var data = this.state.data;
       views = data.views;
       if(key === "configview") {
-        var hmrLocalConfig = window.localStorage.hmrLocalConfig;
-        var lc;
-        if(hmrLocalConfig !== undefined) {
-          lc = JSON.parse(hmrLocalConfig);
-        }
         view = <HomrConfigView key={key} localConfig={lc} onSaveConfig={this.saveConfig.bind(this)}/>;
+      }
+      else if(key === "monitorview") {
+        view = <HomrMonitorView key={key}
+        allDataMap={this.state.allDataMap}
+        onRemoveMessage={this.handleRemoveMessage.bind(this)} />;
       }
       else {
         var viewKey = "view_" + key;
@@ -216,9 +280,11 @@ export default class App extends Component {
     return (
       <div className="App">
         <HomrNav viewsData={views}
+          monitor={true}
           handleNavEvent={this.handleNavEvent}></HomrNav>
         <HomrErrorView messages={messages} />
         {view}
+        renderCount: {rc}
       </div>
     );
   }
