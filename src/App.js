@@ -72,7 +72,6 @@ export default class App extends Component {
 
 
   onTimer() {
-    //console.log("timer");
     var tm = new Date().getTime();
     var st = this.state;
     var mess = st.messages;
@@ -86,8 +85,6 @@ export default class App extends Component {
     st.messages = newMess;
     this.setState(st);
 
-    console.log("timer: " + newMess.length);
-
     if(newMess.length === 0) {
       clearInterval(this.timer);
       this.timer = undefined;
@@ -97,6 +94,8 @@ export default class App extends Component {
   resetState() {
     this.setState({
       currentViewKey: "configview",
+      startTime: new Date(),
+      received: 0,
       data: {},
       dataMap: {},
       allDataMap: {},
@@ -106,7 +105,6 @@ export default class App extends Component {
 
   onConfigLoaded(data) {
     console.log("config loaded");
-    console.log(data);
     this.resetState();
     var st = this.state;
     st.data = data;
@@ -158,11 +156,12 @@ export default class App extends Component {
       }
     }
     this.setState(st);
+    this.dataServ.sendRawMessage(this.config.clientid + "/connected", "2");
+
     console.log("collecting ended");
   }
 
   processMessage(data, topic) {
-    //console.log(data.val);
     if(this.collecting) {
       this.bufferedDataMap[topic] = data;
     }
@@ -175,6 +174,7 @@ export default class App extends Component {
   }
 
   messageToState(st, data, topic) {
+    st.received = st.received + 1;
     var col = st.dataMap[topic];
     st.allDataMap[topic] = data;
     if(col !== undefined) {
@@ -184,13 +184,6 @@ export default class App extends Component {
         }
       }
       col.waiting = 0;
-    }
-  }
-
-  setCollectedState(st) {
-    if(this.collecting) {
-
-      this.buffered = st;
     }
   }
 
@@ -250,6 +243,7 @@ export default class App extends Component {
     var views = {};
     var messages = [];
 
+
     var rc = this.renderCount + 1;
     this.renderCount = rc;
 
@@ -284,7 +278,6 @@ export default class App extends Component {
           handleNavEvent={this.handleNavEvent}></HomrNav>
         <HomrErrorView messages={messages} />
         {view}
-        renderCount: {rc}
       </div>
     );
   }

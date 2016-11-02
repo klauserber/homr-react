@@ -162,7 +162,6 @@ export class HomrMonitorView extends Component {
             </Panel>
           <ListGroup>{dataPoints}</ListGroup>
         </Panel>
-        <p>renderCount: {rc}</p>
       </div>
     );
   }

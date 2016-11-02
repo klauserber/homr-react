@@ -57,23 +57,24 @@ export class HomrDataService {
         // Once a connection has been made, make a subscription and send a message.
         this.mqtt.subscribe("#");
         console.log("mqtt connected");
+        this.sendRawMessage(config.clientid + "/connected", "1");
       }
     });
   }
 
-  sendMessage(topic, msg) {
-    var message = new Paho.MQTT.Message(JSON.stringify(msg));
+  sendMessage(topic, msg, retained) {
+    this.sendRawMessage(topic, JSON.stringify(msg), retained);
+  }
+
+  sendRawMessage(topic, msgString, retained) {
+    var message = new Paho.MQTT.Message(msgString);
     message.destinationName = topic;
+    message.retained = (retained === true);
     this.mqtt.send(message);
-    console.log("Message sent to: " + topic);
   }
 
   removeMessage(topic) {
-    var message = new Paho.MQTT.Message("");
-    message.destinationName = topic;
-    message.retained = true;
-    this.mqtt.send(message);
-    //console.log("Message sent to: " + topic);
+    this.sendRawMessage(topic, "", true);
   }
 
 
