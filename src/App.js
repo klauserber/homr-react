@@ -96,6 +96,7 @@ export default class App extends Component {
       currentViewKey: "configview",
       startTime: new Date(),
       received: 0,
+      sent: 0,
       data: {},
       dataMap: {},
       allDataMap: {},
@@ -174,7 +175,7 @@ export default class App extends Component {
   }
 
   messageToState(st, data, topic) {
-    st.received = st.received + 1;
+    st.received++;
     var col = st.dataMap[topic];
     st.allDataMap[topic] = data;
     if(col !== undefined) {
@@ -209,6 +210,7 @@ export default class App extends Component {
     }
     payload.ts = new Date().getTime();
     ds.sendMessage(topic, payload);
+    st.sent++;
     this.setState(st);
   }
 
@@ -242,14 +244,23 @@ export default class App extends Component {
     var view = <div />;
     var views = {};
     var messages = [];
-
+    var info = {
+      received: 0,
+      sent: 0,
+      rate: 0
+    };
 
     var rc = this.renderCount + 1;
     this.renderCount = rc;
-
-    if(this.state !== null) {
+    var st = this.state;
+    if(st !== null) {
       var hmrLocalConfig = window.localStorage.hmrLocalConfig;
       var lc;
+      var now = new Date().getTime();
+      info.rate = Math.floor(st.received / ((now - st.startTime.getTime()) / 60000));
+      info.received = st.received;
+      info.sent = st.sent;
+
       if(hmrLocalConfig !== undefined) {
         lc = JSON.parse(hmrLocalConfig);
       }
@@ -275,7 +286,8 @@ export default class App extends Component {
       <div className="App">
         <HomrNav viewsData={views}
           monitor={true}
-          handleNavEvent={this.handleNavEvent}></HomrNav>
+          handleNavEvent={this.handleNavEvent}
+          statusInfo={info}/>
         <HomrErrorView messages={messages} />
         {view}
       </div>

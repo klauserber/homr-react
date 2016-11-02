@@ -36,8 +36,10 @@ export class HomrNav extends Component {
 
     var st = this.state;
     var exp = st !== null ? st.navExpanded : false;
+    var info = this.props.statusInfo;
 
     return (
+      <div>
       <Navbar bsStyle="inverse" fixedTop
           onToggle={this.navToggle.bind(this)}
           expanded={exp}>
@@ -53,6 +55,17 @@ export class HomrNav extends Component {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
+      <Navbar bsStyle="inverse" fixedBottom >
+        <Navbar.Header>
+          <Navbar.Brand>
+            <a href="#">hmr1</a>
+          </Navbar.Brand>
+          <Navbar.Text>
+            r: {info.received} / s: {info.sent} / {info.rate} m/min
+          </Navbar.Text>
+        </Navbar.Header>
+      </Navbar>
+      </div>
     );
   }
 }
