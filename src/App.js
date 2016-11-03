@@ -6,6 +6,11 @@ import { HomrStatusView } from './HomrStatusView.js';
 import { HomrConfigView } from './HomrConfigView.js';
 import { HomrErrorView } from './HomrErrorView.js';
 import { HomrMonitorView } from './HomrMonitorView.js';
+import 'dateformat';
+
+var dateFormat = require('dateformat');
+
+const VERSION = "1.0-beta";
 
 export default class App extends Component {
 
@@ -95,6 +100,7 @@ export default class App extends Component {
     this.setState({
       currentViewKey: "configview",
       startTime: new Date(),
+      lastMsg: new Date(0),
       received: 0,
       sent: 0,
       data: {},
@@ -168,6 +174,8 @@ export default class App extends Component {
     }
     else {
       var st = this.state;
+      st.received++;
+      st.lastMsg = new Date();
       this.messageToState(st, data, topic);
       this.setState(st);
     }
@@ -175,7 +183,6 @@ export default class App extends Component {
   }
 
   messageToState(st, data, topic) {
-    st.received++;
     var col = st.dataMap[topic];
     st.allDataMap[topic] = data;
     if(col !== undefined) {
@@ -211,6 +218,7 @@ export default class App extends Component {
     payload.ts = new Date().getTime();
     ds.sendMessage(topic, payload);
     st.sent++;
+    st.lastMsg = new Date();
     this.setState(st);
   }
 
@@ -245,9 +253,12 @@ export default class App extends Component {
     var views = {};
     var messages = [];
     var info = {
+      version: VERSION,
+      clientid: "",
       received: 0,
       sent: 0,
-      rate: 0
+      rate: 0,
+      lastMsg: ""
     };
 
     var rc = this.renderCount + 1;
@@ -260,6 +271,10 @@ export default class App extends Component {
       info.rate = Math.floor(st.received / ((now - st.startTime.getTime()) / 60000));
       info.received = st.received;
       info.sent = st.sent;
+      if(this.config !== undefined) {
+        info.clientid = this.config.clientid;
+      }
+      info.lastMsg = dateFormat(st.lastMsg, "HH:MM:ss");
 
       if(hmrLocalConfig !== undefined) {
         lc = JSON.parse(hmrLocalConfig);

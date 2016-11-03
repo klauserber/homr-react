@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, NavItem, Nav } from 'react-bootstrap';
+import { Navbar, NavItem, Nav, Row, Col } from 'react-bootstrap';
 
 
 export class HomrNav extends Component {
@@ -57,11 +57,17 @@ export class HomrNav extends Component {
       </Navbar>
       <Navbar bsStyle="inverse" fixedBottom >
         <Navbar.Header>
-          <Navbar.Brand>
-            <a href="#">hmr1</a>
-          </Navbar.Brand>
           <Navbar.Text>
-            r: {info.received} / s: {info.sent} / {info.rate} m/min
+            <div className="container">
+            <Row>
+              <Col xs={2}>{info.clientid}</Col>
+              <Col xs={2}>rec: {info.received}</Col>
+              <Col xs={2}>rate: {info.rate}</Col>
+              <Col xs={2}>sent: {info.sent}</Col>
+              <Col xs={2}>{info.lastMsg}</Col>
+              <Col xs={2}>{info.version}</Col>
+            </Row>
+            </div>
           </Navbar.Text>
         </Navbar.Header>
       </Navbar>

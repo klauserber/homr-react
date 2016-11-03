@@ -19,7 +19,7 @@ export class HomrMonitorView extends Component {
     });
   }
 
-  handleDatePointSearch(e) {
+  handleDataPointSearch(e) {
     var st = this.state;
     st.dataPointSearch = e.target.value;
     this.setState(st);
@@ -149,7 +149,7 @@ export class HomrMonitorView extends Component {
                 <FormControl
                   type="text"
                   value={this.state.dataPointSearch}
-                  onChange={this.handleDatePointSearch.bind(this)}
+                  onChange={this.handleDataPointSearch.bind(this)}
                   placeholder={"Search..."}/>
               </Col>
               <Col xs={2}>
