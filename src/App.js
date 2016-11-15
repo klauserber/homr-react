@@ -233,6 +233,7 @@ export default class App extends Component {
       this.onConfigLoaded(data);
       this.pushSuccessMessage("Configuration succesfully loaded");
     }).catch((err) => {
+      console.log(err);
       this.resetState();
       this.pushDangerMessage("Configuration load failed");
     });

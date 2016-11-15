@@ -1,0 +1,156 @@
+{
+  "config": {
+    // Id/Name of the component
+    "clientid": "hmr1",
+    // topic prefix to receive message
+    "statusprefix": "hmr1/status/",
+    // topic prefix to send messages
+    "setprefix": "hmr1/set/",
+    // the mqtt host and port to connect
+    "mqttHost": "<your hostname or IP>",
+    "mqttPort": 9001
+  },
+  // you can have defaults for all status buttons
+  "defaults": {
+      // Configure the standard bootstrap grid system of 12 columns,
+      // for responsive design
+      // The number of columns you wish to span for Extra small devices Phones (<768px)
+      "xs": 4,
+      // The number of columns you wish to span for Small devices Tablets (≥768px)
+      "sm": 3,
+      // The number of columns you wish to span for Medium devices Desktops (≥992px)
+      "md": 2,
+      // The color to display, while waiting for the next message
+      "waitingcolor": "grey"
+  },
+  // The views to display
+  // Every member here produces an menu entry to display the view
+  "views": {
+      "main": {
+          "title": "Main View",
+          // Defaults for the hole view
+          "defaults": {
+              // Colors: for- and background
+              "color": "#000000",
+              "backcolor": "#c0c0c0"
+          },
+          // Every row in a view is displayed in a collapsable Bootstrap panel
+          "rows": [
+          {
+            // Defaults for the row
+            "defaults": {
+                // Color for val > 0
+                "oncolor": "orange",
+                // Color for val == 0
+                "offcolor": "#c0c0c0",
+                // Override Grid configuration
+                "xs": 2,
+                "sm": 2,
+                "md": 1
+            },
+            // Title for the row panel
+            "title": "Alarm",
+            // The columns of the row
+            // Each entry represents a 'StatusButton', that can receive and send messages
+            // and displays a text. For- and background color can be controlled via messages
+            // A StatusButton can display a image from a surveillance camera for example and
+            // update it in a changeable interval.
+            "cols":
+            [
+                {
+                    // The id must be unique per view
+                    // It is used to build the topics to control the status and send messages, for example:
+                    // status: hmr1/status/main/outdoor-monitor
+                    // send: hmr1/set/main/outdoor-monitor
+                    // The status topic should be published retained to keep it between restarts.
+                    // You need to publish a JSON structure to the status topic to change the
+                    // the StatusButton state (for example { "val": 1, "backcolor": "red" })
+                    //
+                    // The send topic is used on a button click or touch. On such an event the
+                    // complete JSON structure of the StatusButton is published.
+                    // This is a difference to the mqtt-smarthome architecture.
+                    //
+                    // The Button has an on/off semantic, that means, that the val property is
+                    // automaticly negated on each click (val = val > 0 ? 0 : 1)
+                    "id": "outdoor-monitor",
+                    // The initial text to display
+                    "text": "Outdoor",
+                    // The initial value
+                    "val": 0
+                },
+                {
+                    "id": "alarm-status",
+                    "text": "ALARM",
+                    // The default text when val == 0
+                    "offtext": "KEIN ALARM",
+                    "val": 0,
+                    "xs": 10,
+                    "sm": 10,
+                    "md": 11,
+                    // The default color, when val > 0
+                    "oncolor": "red",
+                    // The button is not clickable
+                    "readonly": 1
+                }
+            ]
+          },
+          // Next row
+          {
+            "title": "Windows",
+            "cols":
+            [
+                {
+                    "id": "open-windows",
+                    "text": "Windows",
+                    "val": 0,
+                    "oncolor": "cyan",
+                    "offcolor": "#c0c0c0",
+                    // override
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "readonly": 1,
+                    // Default text when val == 0
+                    "offtext": "All closed"
+                }
+            ]
+          }
+        ]
+      },
+      // Second view for camera images
+      "cam": {
+          "title": "Cam View",
+          "defaults": {
+              "color": "#000000",
+              "backcolor": "#808080",
+              "xs": 12,
+              "sm": 12,
+              "md": 6
+          },
+          "rows": [
+          {
+            "title": "Cameras",
+            "cols":
+            [
+              {
+                  "id": "cam-entrance",
+                  "text": "Cam entrance",
+                  // Rerender time interval in ms
+                  "interval": 2000,
+                  "val": 0,
+                  // URL to fetch the image
+                  "imgurl": "http://<web-cam-ip>/path/to/image.jpg"
+              },
+              {
+                  "id": "cam-garden",
+                  "text": "Cam garden",
+                  "interval": 2000,
+                  "val": 0,
+                  "imgurl": "http://<web-cam-ip>/path/to/image.jpg"
+              }
+            ]
+          }
+        ]
+      }
+   }
+}
