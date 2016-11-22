@@ -1,14 +1,38 @@
 # Welcome to HOMR-REACT
 
-HOMR-REACT is a small html5 app that provides simple status displays and switches for smart home applications. It connects direct to a MQTT server to communicate with other home automation components, such as Homematic or Philipps Hue. Please have a look at the [mqtt-smarthome](https://github.com/mqtt-smarthome/mqtt-smarthome/) architecture from [Oliver Wagner](https://github.com/owagner) to get a idea how is works.
+![MainView](Screen-MainView.png)
+
+HOMR-REACT is a small html5 app that provides simple status displays and switches for **smart home applications**. It connects direct to a **MQTT** server to communicate with other home automation components, such as Homematic or Philipps Hue. Please have a look at the [mqtt-smarthome](https://github.com/mqtt-smarthome/mqtt-smarthome/) architecture from [Oliver Wagner](https://github.com/owagner) to get a idea how is works.
+
+![HOMR-REACT on Nexus 7](photo-hmr-nexus7.jpg)
 
 ## Installation
 
 Unzip the distribution in the web root of your web server.
 
+If you use [mosquitto](https://mosquitto.org) as your mqtt server, you can use the build-in HTTP service.
+
+## Security!
+
+Be aware that HOMR-REACT is **ABSOLUTLY INSECURE** by design. You have to restrict the access by yourself. For example you can use basic authentication in your web server to deliver the app. It is strictly recommended to use some sort of VPN (like [OpenVPN](https://openvpn.net/)) to access the app from outside of your local network. **Don't use a simple port forward in your router**.
+
+## Design goals
+
+* Lightweight
+* client only, no special server component required
+* simulate real hardware components, like a bunch of push buttons with status LEDs talking direct with mqtt
+* responsive design to make it easier to use it on different device sizes
+* Open Source
+* Platform independent, the only requirement should be a modern web browser
+* no polling, just react on received messages
+
+The app is inspired by the [Homestatus Android app](http://homestatus.de/) that have used a couple of months.
+
 ## Configuration
 
-At first you will see the configuration view when you open the app in your favorite web browser on a new device (desktop, smartphone or tablet). There is only one configuration parameter, the 'Configuration URL'. The Configuration URL must return a JSON with the following structure (please remove the comments or use the file hmr-config-demo.json):
+![Config](Screen-Config.png)
+
+At first you will see the **configuration view** when you open the app in your favorite web browser on a new device (desktop, smartphone or tablet or whatever). There is only one configuration parameter, the **'Configuration URL'**. The Configuration URL must return a JSON with the following structure (please remove the comments or use the file hmr-config-demo.json):
 
     {
       "config": {
@@ -167,7 +191,13 @@ At first you will see the configuration view when you open the app in your favor
        }
     }
 
-You can use the same configuration on different devices. Or you can provided special configurations for different devices sizes or use cases.
+You can use the **same configuration on different devices**. Or you can provided special configurations for different devices sizes or use cases.
+
+When you hit the **save button**, the configuration URL will be saved in local storage of the web browser on your device. From now on you will see the first configured view, when you start the app on this device.
+
+It is even possible to generate the configuration **dynamically**. For example: I use almost the same configuration for my tablets in the local WLAN and over low bandwidth/VPN connections on my smartphone. But I don't want to display webcam images on my main view. There is an URL parameter (lean=1) to control this configuration difference. Btw the hole configuration is delivered by a [Node Red](https://nodered.org) http-in node, a very simple way to provide a webservice.
+
+![MainView](Screen-CamView.png)
 
 ## Monitoring
 
@@ -179,36 +209,57 @@ Actually there is a monitoring view in the app to see what is happening on the m
 * Icons.
 * Remove the monitoring view and create an separate monitoring app.
 * Charts to visualize historical data.
+* Support http basic authentication to fetch the configuration.
+
+## Some further ideas
+
+* A cooler design, may be like Windows Metro
+* A cordova wrapper app to put in the app stores
+* Other controls like sliders, switches etc.
+* Switch the current view with messages
+* Play audio files
+* Support authentication for mqtt.
 
 ## Interesting Links
 
 * [Node Red](https://nodered.org/) - Visual development of smart home logic.
+
+It is possible to use any progamming language or framework to implement the smarthome logic to feed yout mqtt broker of your choice. [logic4mqtt](https://github.com/owagner/logic4mqtt) is such a framework. I prefer Node Red that is using a mix of visual components an JavaScript code.
+
+![NodeRed](Screen-NodeRed.png)
+
 * [mqtt-smarthome Software](https://github.com/mqtt-smarthome/mqtt-smarthome/blob/master/Software.md) - Many mqtt bindings and more
 * [awesome-mqtt](https://github.com/hobbyquaker/awesome-mqtt) - All about mqtt
-
-## My current setup
-
-I use mqtt as a central hub to control my smart home. Here is my current setup:
-
-Hardware:
-* about 40 Homatic (ccu2, window, level and motion sensors, some switches and controllers)
-* Philips Hue/Osram Lightify (Philips bridge, 13 bulbs and light stripes)
-* Synology Surveillance Station (DS116, 4 Cameras, Vivotek, Foscam)
-* Intel NUC PC i3, Ubuntu (Yes! No Raspi)
-* 3x Nexus 7 Android Tablets for smart home status and control
-* 2x 700VA APC USV
-
-Software:
 * [mosquitto](https://mosquitto.org) - MQTT Broker
 * [hm2mqtt](https://github.com/owagner/hm2mqtt) - Homematic MQTT integration
-* [Node Red](https://nodered.org) - Visual logic development
-* [CouchDB](http://couchdb.apache.org) - Message Archive (in progress)
+* [CouchDB](http://couchdb.apache.org) - Archiving messages
 * [Telegram](https://telegram.org) - Push Notifications via Telegram Bot API
-* [Surveillance Station](https://www.synology.com/de-de/surveillance/) - Video monitoring
-* HOMR-REACT - Status Display and control
 
 ## Development
+
+You need [Node.js](https://nodejs.org) to develop and build the software.
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 You will find some information on how to perform common tasks  [here](https://github.com/facebookincubator/create-react-app/blob/master/template/README.md).
+
+### Commands
+
+To start the development mode use:
+
+    npm start
+
+To build the destribution use:
+
+    npm run build
+
+### Libraries
+
+* [React](https://facebook.github.io/react/) - UI development
+* [React-Bootstrap](https://react-bootstrap.github.io/) - The most popular front-end framework, rebuilt for React
+* [Eclipse Paho JavaScript Client](https://eclipse.org/paho/clients/js/)
+* [dateformat](https://www.npmjs.com/package/dateformat)
+
+## BSD-like-licence
+
+HOMR-REACT is open source, please have look at the LICENCE file.
