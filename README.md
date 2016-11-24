@@ -2,7 +2,7 @@
 
 ![MainView](Screen-MainView.png)
 
-HOMR-REACT is a small html5 app that provides simple status displays and switches for **smart home applications**. It connects direct to a **MQTT** server to communicate with other home automation components, such as Homematic or Philipps Hue. Please have a look at the [mqtt-smarthome](https://github.com/mqtt-smarthome/mqtt-smarthome/) architecture from [Oliver Wagner](https://github.com/owagner) to get a idea how is works.
+HOMR-REACT is a small html5 app that provides simple status displays and switches for **smart home applications**. It connects direct to a **MQTT** server to communicate with other home automation components, such as Homematic or Philipps Hue. Please have a look at the [mqtt-smarthome](https://github.com/mqtt-smarthome/mqtt-smarthome/) architecture from [Oliver Wagner](https://github.com/owagner) (✝ 2016) to get a idea how is works.
 
 ![HOMR-REACT on Nexus 7](photo-hmr-nexus7.jpg)
 
