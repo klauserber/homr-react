@@ -26,7 +26,7 @@ Be aware that HOMR-REACT is **ABSOLUTLY INSECURE** by design. You have to restri
 * Platform independent, the only requirement should be a modern web browser
 * no polling, just react on received messages
 
-The app is inspired by the [Homestatus Android app](http://homestatus.de/) that have used a couple of months.
+The app is inspired by the [Homestatus Android app](http://homestatus.de/) that I have used a couple of months.
 
 ## Configuration
 
