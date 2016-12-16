@@ -45,7 +45,7 @@ export class HomrNav extends Component {
           expanded={exp}>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="#">HOMR</a>
+            <a href="#">HOMR REACT</a>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
@@ -61,9 +61,8 @@ export class HomrNav extends Component {
             <div className="container">
             <Row>
               <Col xs={2}>{info.clientid}</Col>
-              <Col xs={2}>rec: {info.received}</Col>
-              <Col xs={2}>rate: {info.rate}</Col>
-              <Col xs={2}>sent: {info.sent}</Col>
+              <Col xs={3}>rec: {info.received}</Col>
+              <Col xs={3}>rate: {info.rate}</Col>
               <Col xs={2}>{info.lastMsg}</Col>
               <Col xs={2}>{info.version}</Col>
             </Row>

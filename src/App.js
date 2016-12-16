@@ -10,7 +10,7 @@ import 'dateformat';
 
 var dateFormat = require('dateformat');
 
-const VERSION = "1.0-beta";
+const VERSION = "1.0";
 
 export default class App extends Component {
 
