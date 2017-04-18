@@ -232,7 +232,7 @@ It is possible to use any progamming language or framework to implement the smar
 * [awesome-mqtt](https://github.com/hobbyquaker/awesome-mqtt) - All about mqtt
 * [mosquitto](https://mosquitto.org) - MQTT Broker
 * [hm2mqtt](https://github.com/owagner/hm2mqtt) - Homematic MQTT integration
-* [CouchDB](http://couchdb.apache.org) - Archiving messages
+* [elastic](https://www.elastic.co/) - Archiving messages
 * [Telegram](https://telegram.org) - Push Notifications via Telegram Bot API
 
 ## Development
